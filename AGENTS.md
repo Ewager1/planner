@@ -47,3 +47,6 @@
   GitHub Issue.
 - Keep changes within the issue's scope.
 - Never merge pull requests into main.
+-  Read docs/project-spec.md for application requirements.
+- Read docs/project-plan.md for development phases and dependencies.
+- Follow the assigned GitHub Issue's acceptance criteria.
