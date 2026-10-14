@@ -31,12 +31,15 @@ input {
 }
 
 .app-card {
-  width: min(100%, 36rem);
+  width: min(100%, 48rem);
   padding: 3rem;
   border: 1px solid #e5e7eb;
   border-radius: 1rem;
   background: #ffffff;
   box-shadow: 0 1rem 3rem rgb(15 23 42 / 8%);
+}
+
+.app-header {
   text-align: center;
 }
 
@@ -56,7 +59,51 @@ h1 {
   line-height: 1;
 }
 
-.app-card > p:last-child {
+.empty-state,
+[role="alert"] {
   margin: 1rem 0 0;
   color: #6b7280;
+  text-align: center;
+}
+
+[role="alert"] {
+  color: #b91c1c;
+}
+
+.task-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+}
+
+.task-item h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.task-item time {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.task-status {
+  color: #4b5563;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
