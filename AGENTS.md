@@ -13,6 +13,8 @@
   - `fix/<issue-number>-<short-description>`
   - `chore/<issue-number>-<short-description>`
 - Never commit directly to main.
+- Add every new GitHub issue to the `planner` GitHub Project (Project #5).
+- Verify that the issue appears in the project before considering issue creation complete.
 - Create a pull request targeting main.
 - Never merge a pull request.
 - Do not force-push or delete remote branches without approval.
