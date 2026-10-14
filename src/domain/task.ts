@@ -22,6 +22,10 @@ interface TaskCreationDependencies {
   now: () => Date
 }
 
+interface TaskUpdateDependencies {
+  now: () => Date
+}
+
 const defaultDependencies: TaskCreationDependencies = {
   generateId: () => crypto.randomUUID(),
   now: () => new Date(),
@@ -72,5 +76,24 @@ export function createTask(
     completed: false,
     createdAt: timestamp,
     updatedAt: timestamp,
+  }
+}
+
+export function updateTask(
+  task: Task,
+  input: TaskInput,
+  dependencies: TaskUpdateDependencies = { now: () => new Date() },
+): Task {
+  const errors = validateTaskInput(input)
+
+  if (Object.keys(errors).length > 0) {
+    throw new TaskValidationError(errors)
+  }
+
+  return {
+    ...task,
+    title: input.title.trim(),
+    scheduledAt: new Date(input.scheduledAt).toISOString(),
+    updatedAt: dependencies.now().toISOString(),
   }
 }

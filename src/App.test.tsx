@@ -21,6 +21,20 @@ const earlierTask: Task = {
   completed: false,
 }
 
+function getLocalScheduleParts(scheduledAt: string) {
+  const scheduledDate = new Date(scheduledAt)
+  const localDate = new Date(
+    scheduledDate.getTime() - scheduledDate.getTimezoneOffset() * 60_000,
+  )
+    .toISOString()
+    .slice(0, 16)
+
+  return {
+    date: localDate.slice(0, 10),
+    time: localDate.slice(11, 16),
+  }
+}
+
 describe('App', () => {
   beforeEach(() => {
     localStorage.clear()
@@ -92,5 +106,64 @@ describe('App', () => {
         completed: false,
       }),
     ])
+  })
+
+  it('populates the edit form and persists saved changes', () => {
+    new TaskRepository().save([earlierTask])
+    const initialSchedule = getLocalScheduleParts(earlierTask.scheduledAt)
+
+    render(<App />)
+
+    fireEvent.click(
+      screen.getByRole('button', { name: `Edit ${earlierTask.title}` }),
+    )
+
+    expect(screen.getByLabelText('Title')).toHaveValue(earlierTask.title)
+    expect(screen.getByLabelText('Scheduled date')).toHaveValue(
+      initialSchedule.date,
+    )
+    expect(screen.getByLabelText('Scheduled time')).toHaveValue(
+      initialSchedule.time,
+    )
+
+    fireEvent.change(screen.getByLabelText('Title'), {
+      target: { value: 'Updated task' },
+    })
+    fireEvent.change(screen.getByLabelText('Scheduled date'), {
+      target: { value: '2026-10-20' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }))
+
+    expect(
+      screen.getByRole('heading', { name: 'Updated task' }),
+    ).toBeInTheDocument()
+    expect(new TaskRepository().list()).toEqual([
+      expect.objectContaining({
+        id: earlierTask.id,
+        title: 'Updated task',
+        createdAt: earlierTask.createdAt,
+        completed: earlierTask.completed,
+      }),
+    ])
+  })
+
+  it('cancels an edit without modifying the task', () => {
+    new TaskRepository().save([earlierTask])
+
+    render(<App />)
+
+    fireEvent.click(
+      screen.getByRole('button', { name: `Edit ${earlierTask.title}` }),
+    )
+    fireEvent.change(screen.getByLabelText('Title'), {
+      target: { value: 'Discarded change' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+
+    expect(
+      screen.getByRole('heading', { name: earlierTask.title }),
+    ).toBeInTheDocument()
+    expect(screen.queryByDisplayValue('Discarded change')).not.toBeInTheDocument()
+    expect(new TaskRepository().list()).toEqual([earlierTask])
   })
 })

@@ -1,19 +1,40 @@
 import { useState, type FormEvent } from 'react'
 import {
   validateTaskInput,
+  type Task,
   type TaskInput,
   type TaskValidationErrors,
 } from '../domain/task.ts'
 
 interface TaskFormProps {
+  task?: Task
   onCancel: () => void
-  onCreate: (input: TaskInput) => void
+  onSubmit: (input: TaskInput) => void
 }
 
-export function TaskForm({ onCancel, onCreate }: TaskFormProps) {
-  const [title, setTitle] = useState('')
-  const [date, setDate] = useState('')
-  const [time, setTime] = useState('')
+function getLocalScheduleParts(scheduledAt?: string) {
+  if (!scheduledAt) {
+    return { date: '', time: '' }
+  }
+
+  const scheduledDate = new Date(scheduledAt)
+  const localDate = new Date(
+    scheduledDate.getTime() - scheduledDate.getTimezoneOffset() * 60_000,
+  )
+    .toISOString()
+    .slice(0, 16)
+
+  return {
+    date: localDate.slice(0, 10),
+    time: localDate.slice(11, 16),
+  }
+}
+
+export function TaskForm({ task, onCancel, onSubmit }: TaskFormProps) {
+  const initialSchedule = getLocalScheduleParts(task?.scheduledAt)
+  const [title, setTitle] = useState(task?.title ?? '')
+  const [date, setDate] = useState(initialSchedule.date)
+  const [time, setTime] = useState(initialSchedule.time)
   const [errors, setErrors] = useState<TaskValidationErrors>({})
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -27,12 +48,18 @@ export function TaskForm({ onCancel, onCreate }: TaskFormProps) {
     setErrors(nextErrors)
 
     if (Object.keys(nextErrors).length === 0) {
-      onCreate(input)
+      onSubmit(input)
     }
   }
 
   return (
-    <form className="task-form" noValidate onSubmit={handleSubmit}>
+    <form
+      aria-labelledby="task-form-title"
+      className="task-form"
+      noValidate
+      onSubmit={handleSubmit}
+    >
+      <h2 id="task-form-title">{task ? 'Edit task' : 'Create a task'}</h2>
       <div className="form-field">
         <label htmlFor="task-title">Title</label>
         <input
@@ -86,7 +113,7 @@ export function TaskForm({ onCancel, onCreate }: TaskFormProps) {
       ) : null}
 
       <div className="form-actions">
-        <button type="submit">Create task</button>
+        <button type="submit">{task ? 'Save changes' : 'Create task'}</button>
         <button type="button" onClick={onCancel}>
           Cancel
         </button>

@@ -88,6 +88,11 @@ h1 {
   background: #f9fafb;
 }
 
+.task-form h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
 .form-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -169,4 +174,8 @@ h1 {
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
+}
+
+.task-item > button {
+  flex: none;
 }
