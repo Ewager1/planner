@@ -36,3 +36,14 @@
 - Do not add dependencies without explaining their purpose.
 - Do not introduce secrets or credentials into source control.
 - Do not deploy or publish releases unless explicitly requested.
+
+## Project Instructions
+
+- Use docs/project-spec.md as the source of truth
+  for application requirements and architecture.
+- Read the relevant specification sections before
+  implementing features.
+- Follow the acceptance criteria in the assigned
+  GitHub Issue.
+- Keep changes within the issue's scope.
+- Never merge pull requests into main.
