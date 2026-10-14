@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   createTask,
   TaskValidationError,
+  updateTask,
   validateTaskInput,
 } from './task.ts'
 
@@ -35,6 +36,37 @@ describe('validateTaskInput', () => {
         scheduledAt: 'not-a-date',
       }),
     ).toEqual({ scheduledAt: 'Choose a valid scheduled date and time.' })
+  })
+})
+
+describe('updateTask', () => {
+  it('updates editable fields and the modification timestamp', () => {
+    const originalTask = createTask(
+      {
+        title: 'Original title',
+        scheduledAt: '2026-10-15T13:30:00.000Z',
+      },
+      {
+        generateId: () => 'task-1',
+        now: () => new Date('2026-10-14T17:00:00.000Z'),
+      },
+    )
+
+    const updatedTask = updateTask(
+      originalTask,
+      {
+        title: '  Updated title  ',
+        scheduledAt: '2026-10-16T09:00:00-04:00',
+      },
+      { now: () => new Date('2026-10-14T18:00:00.000Z') },
+    )
+
+    expect(updatedTask).toEqual({
+      ...originalTask,
+      title: 'Updated title',
+      scheduledAt: '2026-10-16T13:00:00.000Z',
+      updatedAt: '2026-10-14T18:00:00.000Z',
+    })
   })
 })
 

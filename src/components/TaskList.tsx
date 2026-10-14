@@ -1,6 +1,7 @@
 import type { Task } from '../domain/task.ts'
 
 interface TaskListProps {
+  onEdit: (task: Task) => void
   tasks: Task[]
 }
 
@@ -12,7 +13,7 @@ const timeFormatter = new Intl.DateTimeFormat(undefined, {
   timeStyle: 'short',
 })
 
-export function TaskList({ tasks }: TaskListProps) {
+export function TaskList({ onEdit, tasks }: TaskListProps) {
   if (tasks.length === 0) {
     return <p className="empty-state">No tasks yet.</p>
   }
@@ -40,6 +41,13 @@ export function TaskList({ tasks }: TaskListProps) {
             <span className="task-status">
               {task.completed ? 'Completed' : 'Incomplete'}
             </span>
+            <button
+              aria-label={`Edit ${task.title}`}
+              type="button"
+              onClick={() => onEdit(task)}
+            >
+              Edit
+            </button>
           </li>
         )
       })}
