@@ -1,0 +1,72 @@
+.shell {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+.card {
+  width: min(100%, 52rem);
+  padding: 3rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 1rem 3rem rgb(15 23 42 / 8%);
+}
+
+.header {
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: #4f46e5;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  color: #111827;
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  line-height: 1;
+}
+
+.addButton {
+  margin-top: 1.5rem;
+  padding: 0.65rem 1rem;
+  border: 0;
+  border-radius: 0.5rem;
+  color: #ffffff;
+  background: #4f46e5;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.addButton:hover {
+  background: #4338ca;
+}
+
+.alert {
+  margin: 1rem 0 0;
+  color: #b91c1c;
+  text-align: center;
+}
+
+@media (max-width: 40rem) {
+  .shell {
+    align-items: start;
+    padding: 0.75rem;
+  }
+
+  .card {
+    padding: 1.5rem 1rem;
+    border-radius: 0.75rem;
+  }
+
+  .title {
+    font-size: 2.75rem;
+  }
+}

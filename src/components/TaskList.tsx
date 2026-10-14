@@ -1,4 +1,5 @@
 import type { Task } from '../domain/task.ts'
+import styles from './TaskList.module.css'
 
 interface TaskListProps {
   onDelete: (task: Task) => void
@@ -17,7 +18,7 @@ const timeFormatter = new Intl.DateTimeFormat(undefined, {
 
 export function TaskList({ onDelete, onEdit, onToggle, tasks }: TaskListProps) {
   if (tasks.length === 0) {
-    return <p className="empty-state">No tasks yet.</p>
+    return <p className={styles.empty}>No tasks yet.</p>
   }
 
   const sortedTasks = [...tasks].sort(
@@ -27,34 +28,36 @@ export function TaskList({ onDelete, onEdit, onToggle, tasks }: TaskListProps) {
   )
 
   return (
-    <ul className="task-list" aria-label="Tasks">
+    <ul className={styles.list} aria-label="Tasks">
       {sortedTasks.map((task) => {
         const scheduledDate = new Date(task.scheduledAt)
 
         return (
           <li
-            className={`task-item${task.completed ? ' task-item--completed' : ''}`}
+            className={`${styles.item} ${task.completed ? styles.itemCompleted : ''}`}
             key={task.id}
           >
             <input
               aria-label={`Mark ${task.title} as ${task.completed ? 'incomplete' : 'complete'}`}
               checked={task.completed}
+              className={styles.completionToggle}
               type="checkbox"
               onChange={() => onToggle(task)}
             />
-            <div className="task-details">
+            <div className={styles.details}>
               <h2>{task.title}</h2>
               <time dateTime={task.scheduledAt}>
                 <span>{dateFormatter.format(scheduledDate)}</span>
                 <span>{timeFormatter.format(scheduledDate)}</span>
               </time>
             </div>
-            <div className="task-actions">
-              <span className="task-status">
+            <div className={styles.actions}>
+              <span className={styles.status}>
                 {task.completed ? 'Completed' : 'Incomplete'}
               </span>
               <button
                 aria-label={`Edit ${task.title}`}
+                className={styles.secondaryButton}
                 type="button"
                 onClick={() => onEdit(task)}
               >
@@ -62,6 +65,7 @@ export function TaskList({ onDelete, onEdit, onToggle, tasks }: TaskListProps) {
               </button>
               <button
                 aria-label={`Delete ${task.title}`}
+                className={styles.dangerButton}
                 type="button"
                 onClick={() => onDelete(task)}
               >

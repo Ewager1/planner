@@ -9,6 +9,7 @@ import {
   type TaskInput,
 } from './domain/task.ts'
 import { TaskRepository } from './services/taskRepository.ts'
+import styles from './App.module.css'
 
 interface InitialTaskState {
   tasks: Task[]
@@ -77,19 +78,29 @@ function App() {
   }
 
   return (
-    <main className="app-shell">
-      <section className="app-card" aria-labelledby="app-title">
-        <header className="app-header">
-          <p className="eyebrow">Make time for what matters</p>
-          <h1 id="app-title">Planner</h1>
+    <main className={styles.shell}>
+      <section className={styles.card} aria-labelledby="app-title">
+        <header className={styles.header}>
+          <p className={styles.eyebrow}>Make time for what matters</p>
+          <h1 className={styles.title} id="app-title">
+            Planner
+          </h1>
           {!isTaskFormOpen && !editingTask ? (
-            <button type="button" onClick={() => setIsTaskFormOpen(true)}>
+            <button
+              className={styles.addButton}
+              type="button"
+              onClick={() => setIsTaskFormOpen(true)}
+            >
               Add task
             </button>
           ) : null}
         </header>
 
-        {error ? <p role="alert">{error}</p> : null}
+        {error ? (
+          <p className={styles.alert} role="alert">
+            {error}
+          </p>
+        ) : null}
         {isTaskFormOpen || editingTask ? (
           <TaskForm
             key={editingTask?.id ?? 'new-task'}

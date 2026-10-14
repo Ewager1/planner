@@ -5,6 +5,7 @@ import {
   type TaskInput,
   type TaskValidationErrors,
 } from '../domain/task.ts'
+import styles from './TaskForm.module.css'
 
 interface TaskFormProps {
   task?: Task
@@ -55,12 +56,14 @@ export function TaskForm({ task, onCancel, onSubmit }: TaskFormProps) {
   return (
     <form
       aria-labelledby="task-form-title"
-      className="task-form"
+      className={styles.form}
       noValidate
       onSubmit={handleSubmit}
     >
-      <h2 id="task-form-title">{task ? 'Edit task' : 'Create a task'}</h2>
-      <div className="form-field">
+      <h2 className={styles.title} id="task-form-title">
+        {task ? 'Edit task' : 'Create a task'}
+      </h2>
+      <div className={styles.field}>
         <label htmlFor="task-title">Title</label>
         <input
           aria-describedby={errors.title ? 'task-title-error' : undefined}
@@ -72,14 +75,14 @@ export function TaskForm({ task, onCancel, onSubmit }: TaskFormProps) {
           value={title}
         />
         {errors.title ? (
-          <span className="field-error" id="task-title-error">
+          <span className={styles.error} id="task-title-error">
             {errors.title}
           </span>
         ) : null}
       </div>
 
-      <div className="form-row">
-        <div className="form-field">
+      <div className={styles.row}>
+        <div className={styles.field}>
           <label htmlFor="task-date">Scheduled date</label>
           <input
             aria-describedby={errors.scheduledAt ? 'task-schedule-error' : undefined}
@@ -92,7 +95,7 @@ export function TaskForm({ task, onCancel, onSubmit }: TaskFormProps) {
           />
         </div>
 
-        <div className="form-field">
+        <div className={styles.field}>
           <label htmlFor="task-time">Scheduled time</label>
           <input
             aria-describedby={errors.scheduledAt ? 'task-schedule-error' : undefined}
@@ -107,14 +110,16 @@ export function TaskForm({ task, onCancel, onSubmit }: TaskFormProps) {
       </div>
 
       {errors.scheduledAt ? (
-        <span className="field-error" id="task-schedule-error">
+        <span className={styles.error} id="task-schedule-error">
           {errors.scheduledAt}
         </span>
       ) : null}
 
-      <div className="form-actions">
-        <button type="submit">{task ? 'Save changes' : 'Create task'}</button>
-        <button type="button" onClick={onCancel}>
+      <div className={styles.actions}>
+        <button className={styles.primaryButton} type="submit">
+          {task ? 'Save changes' : 'Create task'}
+        </button>
+        <button className={styles.secondaryButton} type="button" onClick={onCancel}>
           Cancel
         </button>
       </div>
