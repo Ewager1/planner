@@ -157,6 +157,29 @@ describe('App', () => {
     ])
   })
 
+  it('restores persisted tasks after the application reloads', () => {
+    const { unmount } = render(<App />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add task' }))
+    fireEvent.change(screen.getByLabelText('Title'), {
+      target: { value: 'Persist across reloads' },
+    })
+    fireEvent.change(screen.getByLabelText('Scheduled date'), {
+      target: { value: '2026-10-16' },
+    })
+    fireEvent.change(screen.getByLabelText('Scheduled time'), {
+      target: { value: '14:00' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Create task' }))
+
+    unmount()
+    render(<App />)
+
+    expect(
+      screen.getByRole('heading', { name: 'Persist across reloads' }),
+    ).toBeInTheDocument()
+  })
+
   it('populates the edit form and persists saved changes', () => {
     new TaskRepository().save([earlierTask])
     const initialSchedule = getLocalScheduleParts(earlierTask.scheduledAt)
