@@ -97,3 +97,14 @@ export function updateTask(
     updatedAt: dependencies.now().toISOString(),
   }
 }
+
+export function toggleTaskCompletion(
+  task: Task,
+  dependencies: TaskUpdateDependencies = { now: () => new Date() },
+): Task {
+  return {
+    ...task,
+    completed: !task.completed,
+    updatedAt: dependencies.now().toISOString(),
+  }
+}
