@@ -1,0 +1,95 @@
+.form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1.25rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  background: #f9fafb;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.field label {
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.field input {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background: #ffffff;
+}
+
+.field input[aria-invalid='true'] {
+  border-color: #b91c1c;
+}
+
+.error {
+  color: #b91c1c;
+  font-size: 0.8rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.primaryButton,
+.secondaryButton {
+  padding: 0.65rem 1rem;
+  border: 0;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.primaryButton {
+  color: #ffffff;
+  background: #4f46e5;
+}
+
+.primaryButton:hover {
+  background: #4338ca;
+}
+
+.secondaryButton {
+  color: #374151;
+  background: #e5e7eb;
+}
+
+.secondaryButton:hover {
+  background: #d1d5db;
+}
+
+@media (max-width: 40rem) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+  }
+}
