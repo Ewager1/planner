@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App.tsx'
 import type { Task } from './domain/task.ts'
 import { TaskRepository } from './services/taskRepository.ts'
@@ -79,6 +79,55 @@ describe('App', () => {
     expect(
       screen.getByText('Choose a scheduled date and time.'),
     ).toBeInTheDocument()
+    expect(screen.getByLabelText('Title')).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByLabelText('Scheduled date')).toHaveAttribute(
+      'aria-describedby',
+      'task-schedule-error',
+    )
+  })
+
+  it('reports malformed stored data without replacing it', () => {
+    const storedValue = '{malformed'
+    localStorage.setItem('planner.tasks', storedValue)
+
+    render(<App />)
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Saved tasks could not be loaded. Your stored data was left unchanged.',
+    )
+    expect(localStorage.getItem('planner.tasks')).toBe(storedValue)
+  })
+
+  it('reports browser storage write failures and keeps the form data', () => {
+    const storage: Storage = {
+      length: 0,
+      clear: vi.fn(),
+      getItem: vi.fn(() => null),
+      key: vi.fn(() => null),
+      removeItem: vi.fn(),
+      setItem: vi.fn(() => {
+        throw new Error('Storage unavailable')
+      }),
+    }
+
+    render(<App repository={new TaskRepository(storage)} />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add task' }))
+    fireEvent.change(screen.getByLabelText('Title'), {
+      target: { value: 'Write project update' },
+    })
+    fireEvent.change(screen.getByLabelText('Scheduled date'), {
+      target: { value: '2026-10-15' },
+    })
+    fireEvent.change(screen.getByLabelText('Scheduled time'), {
+      target: { value: '09:30' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Create task' }))
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'The task could not be saved in browser storage. Your existing tasks remain unchanged.',
+    )
+    expect(screen.getByLabelText('Title')).toHaveValue('Write project update')
   })
 
   it('creates, displays, and persists a task', () => {
