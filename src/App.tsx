@@ -8,12 +8,16 @@ import {
   type Task,
   type TaskInput,
 } from './domain/task.ts'
-import { TaskRepository } from './services/taskRepository.ts'
+import { TaskRepository, TaskStorageError } from './services/taskRepository.ts'
 import styles from './App.module.css'
 
 interface InitialTaskState {
   tasks: Task[]
   error: string | null
+}
+
+interface AppProps {
+  repository?: TaskRepository
 }
 
 function loadTasks(repository: TaskRepository): InitialTaskState {
@@ -22,13 +26,26 @@ function loadTasks(repository: TaskRepository): InitialTaskState {
   } catch {
     return {
       tasks: [],
-      error: 'Saved tasks could not be loaded.',
+      error: 'Saved tasks could not be loaded. Your stored data was left unchanged.',
     }
   }
 }
 
-function App() {
-  const repository = useMemo(() => new TaskRepository(), [])
+function getStorageErrorMessage(error: unknown, action: string): string {
+  if (error instanceof TaskStorageError) {
+    return error.operation === 'read'
+      ? `${action} because stored tasks could not be read safely. Your existing data was left unchanged.`
+      : `${action} in browser storage. Your existing tasks remain unchanged.`
+  }
+
+  return `${action}.`
+}
+
+function App({ repository: providedRepository }: AppProps = {}) {
+  const repository = useMemo(
+    () => providedRepository ?? new TaskRepository(),
+    [providedRepository],
+  )
   const [{ tasks, error }, setTaskState] = useState(() => loadTasks(repository))
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false)
   const [editingTask, setEditingTask] = useState<Task | null>(null)
@@ -41,10 +58,10 @@ function App() {
       setTaskState({ tasks: nextTasks, error: null })
       setIsTaskFormOpen(false)
       setEditingTask(null)
-    } catch {
+    } catch (error) {
       setTaskState((currentState) => ({
         ...currentState,
-        error: 'The task could not be saved.',
+        error: getStorageErrorMessage(error, 'The task could not be saved'),
       }))
     }
   }
@@ -53,10 +70,10 @@ function App() {
     try {
       const nextTasks = repository.update(toggleTaskCompletion(task))
       setTaskState({ tasks: nextTasks, error: null })
-    } catch {
+    } catch (error) {
       setTaskState((currentState) => ({
         ...currentState,
-        error: 'The task could not be updated.',
+        error: getStorageErrorMessage(error, 'The task could not be updated'),
       }))
     }
   }
@@ -69,10 +86,10 @@ function App() {
       if (editingTask?.id === task.id) {
         setEditingTask(null)
       }
-    } catch {
+    } catch (error) {
       setTaskState((currentState) => ({
         ...currentState,
-        error: 'The task could not be deleted.',
+        error: getStorageErrorMessage(error, 'The task could not be deleted'),
       }))
     }
   }

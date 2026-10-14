@@ -37,6 +37,27 @@ describe('validateTaskInput', () => {
         scheduledAt: 'not-a-date',
       }),
     ).toEqual({ scheduledAt: 'Choose a valid scheduled date and time.' })
+
+    expect(
+      validateTaskInput({
+        title: 'Plan tomorrow',
+        scheduledAt: '2026-10-15',
+      }),
+    ).toEqual({ scheduledAt: 'Choose a valid scheduled date and time.' })
+
+    expect(
+      validateTaskInput({
+        title: 'Plan tomorrow',
+        scheduledAt: '2026-02-30T09:30',
+      }),
+    ).toEqual({ scheduledAt: 'Choose a valid scheduled date and time.' })
+
+    expect(
+      validateTaskInput({
+        title: 'Plan tomorrow',
+        scheduledAt: '2026-02-30T09:30:00.000Z',
+      }),
+    ).toEqual({ scheduledAt: 'Choose a valid scheduled date and time.' })
   })
 })
 
