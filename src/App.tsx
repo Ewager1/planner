@@ -3,6 +3,7 @@ import { TaskForm } from './components/TaskForm.tsx'
 import { TaskList } from './components/TaskList.tsx'
 import {
   createTask,
+  toggleTaskCompletion,
   updateTask,
   type Task,
   type TaskInput,
@@ -47,6 +48,34 @@ function App() {
     }
   }
 
+  function handleToggleTask(task: Task) {
+    try {
+      const nextTasks = repository.update(toggleTaskCompletion(task))
+      setTaskState({ tasks: nextTasks, error: null })
+    } catch {
+      setTaskState((currentState) => ({
+        ...currentState,
+        error: 'The task could not be updated.',
+      }))
+    }
+  }
+
+  function handleDeleteTask(task: Task) {
+    try {
+      const nextTasks = repository.remove(task.id)
+      setTaskState({ tasks: nextTasks, error: null })
+
+      if (editingTask?.id === task.id) {
+        setEditingTask(null)
+      }
+    } catch {
+      setTaskState((currentState) => ({
+        ...currentState,
+        error: 'The task could not be deleted.',
+      }))
+    }
+  }
+
   return (
     <main className="app-shell">
       <section className="app-card" aria-labelledby="app-title">
@@ -74,10 +103,12 @@ function App() {
         ) : null}
         <TaskList
           tasks={tasks}
+          onDelete={handleDeleteTask}
           onEdit={(task) => {
             setIsTaskFormOpen(false)
             setEditingTask(task)
           }}
+          onToggle={handleToggleTask}
         />
       </section>
     </main>

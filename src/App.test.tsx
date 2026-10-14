@@ -166,4 +166,48 @@ describe('App', () => {
     expect(screen.queryByDisplayValue('Discarded change')).not.toBeInTheDocument()
     expect(new TaskRepository().list()).toEqual([earlierTask])
   })
+
+  it('toggles completion and persists the new state', () => {
+    new TaskRepository().save([earlierTask])
+
+    render(<App />)
+
+    fireEvent.click(
+      screen.getByRole('checkbox', {
+        name: `Mark ${earlierTask.title} as complete`,
+      }),
+    )
+
+    expect(screen.getByText('Completed')).toBeInTheDocument()
+    expect(new TaskRepository().list()[0]).toEqual(
+      expect.objectContaining({ completed: true }),
+    )
+
+    fireEvent.click(
+      screen.getByRole('checkbox', {
+        name: `Mark ${earlierTask.title} as incomplete`,
+      }),
+    )
+
+    expect(screen.getByText('Incomplete')).toBeInTheDocument()
+    expect(new TaskRepository().list()[0]).toEqual(
+      expect.objectContaining({ completed: false }),
+    )
+  })
+
+  it('deletes a task from the list and storage', () => {
+    new TaskRepository().save([earlierTask])
+
+    render(<App />)
+
+    fireEvent.click(
+      screen.getByRole('button', { name: `Delete ${earlierTask.title}` }),
+    )
+
+    expect(
+      screen.queryByRole('heading', { name: earlierTask.title }),
+    ).not.toBeInTheDocument()
+    expect(screen.getByText('No tasks yet.')).toBeInTheDocument()
+    expect(new TaskRepository().list()).toEqual([])
+  })
 })

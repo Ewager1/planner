@@ -161,6 +161,10 @@ h1 {
   font-size: 1rem;
 }
 
+.task-details {
+  flex: 1;
+}
+
 .task-item time {
   display: flex;
   gap: 0.5rem;
@@ -176,6 +180,13 @@ h1 {
   text-transform: uppercase;
 }
 
-.task-item > button {
-  flex: none;
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.task-item--completed h2 {
+  color: #6b7280;
+  text-decoration: line-through;
 }

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   createTask,
   TaskValidationError,
+  toggleTaskCompletion,
   updateTask,
   validateTaskInput,
 } from './task.ts'
@@ -65,6 +66,31 @@ describe('updateTask', () => {
       ...originalTask,
       title: 'Updated title',
       scheduledAt: '2026-10-16T13:00:00.000Z',
+      updatedAt: '2026-10-14T18:00:00.000Z',
+    })
+  })
+})
+
+describe('toggleTaskCompletion', () => {
+  it('toggles completion and updates the modification timestamp', () => {
+    const task = createTask(
+      {
+        title: 'Finish report',
+        scheduledAt: '2026-10-15T13:30:00.000Z',
+      },
+      {
+        generateId: () => 'task-1',
+        now: () => new Date('2026-10-14T17:00:00.000Z'),
+      },
+    )
+
+    expect(
+      toggleTaskCompletion(task, {
+        now: () => new Date('2026-10-14T18:00:00.000Z'),
+      }),
+    ).toEqual({
+      ...task,
+      completed: true,
       updatedAt: '2026-10-14T18:00:00.000Z',
     })
   })
