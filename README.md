@@ -29,7 +29,7 @@ Rather than giving Codex one large, ambiguous instruction, the work was divided 
 The repository contains documentation that describes both the application requirements and the development workflow.
 
 - [Project Specification](docs/project-spec.md): Defines what the application should do, its technology stack, and its constraints.
-- [Development Plan](projects/project-plan.md): Breaks the project into phases, tickets, and dependencies.
+- [Development Plan](docs/project-plan.md): Breaks the project into phases, tickets, and dependencies.
 - [AGENTS.md](AGENTS.md): Establishes development conventions, scope restrictions, quality requirements, and GitHub workflow instructions.
 
 These documents provide shared context for development and reduce the need to repeat requirements in every prompt.
