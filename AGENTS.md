@@ -1,0 +1,38 @@
+# Development Workflow
+
+## Task Scope
+- Work on one GitHub issue at a time.
+- Follow the issue's acceptance criteria.
+- Do not implement unrelated features or refactors.
+- If the task requires expanding scope, stop and explain why.
+
+## Git and GitHub
+- Start each task from the latest main branch.
+- Create a dedicated branch using:
+  - `feat/<issue-number>-<short-description>`
+  - `fix/<issue-number>-<short-description>`
+  - `chore/<issue-number>-<short-description>`
+- Never commit directly to main.
+- Create a pull request targeting main.
+- Never merge a pull request.
+- Do not force-push or delete remote branches without approval.
+
+## Quality
+- Add or update tests for changed behavior.
+- Run the relevant tests, lint, typecheck, and build checks.
+- Inspect the final diff for unrelated changes.
+- Report failing checks rather than claiming success.
+- Do not bypass or weaken checks to make a PR pass.
+
+## Pull Requests
+- Reference the GitHub issue.
+- Summarize the changes.
+- Explain how they were verified.
+- Disclose known limitations or incomplete work.
+- Keep the PR open for human review.
+
+## Safety
+- Do not change repository settings or permissions unless requested.
+- Do not add dependencies without explaining their purpose.
+- Do not introduce secrets or credentials into source control.
+- Do not deploy or publish releases unless explicitly requested.
