@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import App from './App.tsx'
 import type { Task } from './domain/task.ts'
@@ -53,5 +53,44 @@ describe('App', () => {
     expect(within(taskList).getByText('Incomplete')).toBeInTheDocument()
     expect(within(taskList).getByText('Completed')).toBeInTheDocument()
     expect(within(taskList).getAllByRole('time')).toHaveLength(2)
+  })
+
+  it('validates required task fields', () => {
+    render(<App />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add task' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Create task' }))
+
+    expect(screen.getByText('Enter a task title.')).toBeInTheDocument()
+    expect(
+      screen.getByText('Choose a scheduled date and time.'),
+    ).toBeInTheDocument()
+  })
+
+  it('creates, displays, and persists a task', () => {
+    render(<App />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add task' }))
+    fireEvent.change(screen.getByLabelText('Title'), {
+      target: { value: 'Write project update' },
+    })
+    fireEvent.change(screen.getByLabelText('Scheduled date'), {
+      target: { value: '2026-10-15' },
+    })
+    fireEvent.change(screen.getByLabelText('Scheduled time'), {
+      target: { value: '09:30' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Create task' }))
+
+    expect(
+      screen.getByRole('heading', { name: 'Write project update' }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Incomplete')).toBeInTheDocument()
+    expect(new TaskRepository().list()).toEqual([
+      expect.objectContaining({
+        title: 'Write project update',
+        completed: false,
+      }),
+    ])
   })
 })
